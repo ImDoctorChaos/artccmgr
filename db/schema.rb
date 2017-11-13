@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20171116025939) do
-
+  
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
@@ -56,6 +56,24 @@ ActiveRecord::Schema.define(version: 20171116025939) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["job_id"], name: "index_crono_jobs_on_job_id", unique: true
+  end
+
+  create_table "document_group_assignments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "document_group_id"
+    t.uuid "user_group_id"
+  end
+
+  create_table "document_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+  end
+
+  create_table "documents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "document_group_id", null: false
+    t.string "name", null: false
+    t.string "document_url", null: false
+    t.text "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "endorsements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -244,4 +262,7 @@ ActiveRecord::Schema.define(version: 20171116025939) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "document_group_assignments", "document_groups"
+  add_foreign_key "document_group_assignments", "groups", column: "user_group_id"
+  add_foreign_key "documents", "document_groups"
 end

@@ -1,0 +1,2 @@
+class DocumentGroupAssignment < ApplicationRecord
+end
